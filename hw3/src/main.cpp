@@ -4,10 +4,25 @@
 
 int main(int argc, char **argv)
 {
-    if (true) // make false to run unit-tests
+    if (false) // make false to run unit-tests
     {
-        // debug section
+        BST::Node left;
+        BST::Node right;
+        std::cout<<left<<right;
+        BST::Node root(3, &left, &right);
+        std::cout<<root;
 
+        std::cout<< (root<3) <<std::endl;
+        std::cout<< (root>3) <<std::endl;
+        std::cout<< (root>=3) <<std::endl;
+        std::cout<< (root<=3) <<std::endl;
+        std::cout<< (root==3) <<std::endl;
+        
+        std::cout<< (3<root) <<std::endl;
+        std::cout<< (3<=root) <<std::endl;
+        std::cout<< (3>root) <<std::endl;
+        std::cout<< (3>=root) <<std::endl;
+        std::cout<< (3==root) <<std::endl;
     }
     else
     {

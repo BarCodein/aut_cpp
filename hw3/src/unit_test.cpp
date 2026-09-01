@@ -3,7 +3,7 @@
 #include "gmock/gmock.h"
 #include "bst.h"
 
-/*
+
 TEST(HW3Test, TEST1) {
 
     BST::Node left{10, nullptr, nullptr};
@@ -81,9 +81,14 @@ TEST(HW3Test, TEST6) {
 
 TEST(HW3Test, TEST7) {
     BST bst{};
+    std::cout<<0<<std::endl;
     bst.add_node(10);
+    std::cout<<1<<std::endl;
     bst.add_node(20);
+    std::cout<<2<<std::endl;
     bst.add_node(5);
+    std::cout<<3<<std::endl;
+    std::cout<<bst;
     EXPECT_EQ(bst.get_root()->value, 10);
     EXPECT_EQ(bst.get_root()->left->value, 5);
     EXPECT_EQ(bst.get_root()->right->value, 20);
@@ -252,14 +257,21 @@ TEST(HW3Test, TEST18) {
     bst.add_node(2);
     bst.add_node(7);
     bst.add_node(75);
-    
+    std::cout<<0;
     EXPECT_EQ(bst.length(), 10);
+    std::cout<<0;
     EXPECT_TRUE(bst.delete_node(10)); // only left child
+    std::cout<<0;
     EXPECT_EQ(bst.length(), 9);
+    std::cout<<1;
     EXPECT_EQ(bst.get_root()->left->value, 5);
+    std::cout<<2;
     EXPECT_EQ(bst.get_root()->left->left->value, 2);
+    std::cout<<3;
     EXPECT_EQ(bst.get_root()->left->right->value, 7);
+    std::cout<<4;
     EXPECT_EQ(bst.get_root()->left->right->left, nullptr);
+    std::cout<<5;
     EXPECT_EQ(bst.get_root()->left->right->right, nullptr);
 }
 
@@ -490,7 +502,7 @@ TEST(HW3Test, TEST31) {
     for(size_t i{}; i < values1.size(); i++)
         EXPECT_EQ(values2[i], values1[i]-1);    
 }
-*/
+
 
 
 
