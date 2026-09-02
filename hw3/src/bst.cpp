@@ -1,5 +1,8 @@
 #include "bst.h"
 
+void bst_delete(BST::Node*& node);
+
+
 BST::Node::Node(int value, Node* left, Node* right)
     :value(value),left(left),right(right){}
 
@@ -51,7 +54,8 @@ BST::BST(std::initializer_list<int> list){
         add_node(item);
 }
 
-void traverse(std::vector<int> values,BST::Node*& node){
+void traverse(std::vector<int>& values,const BST::Node* node){
+    if (node == nullptr)return;
     if (node!=nullptr)values.push_back(node->value);
     if (node->left!=nullptr)
         traverse(values,node->left);
@@ -60,9 +64,11 @@ void traverse(std::vector<int> values,BST::Node*& node){
 }
 
 BST& BST::operator=(const BST& other){
-    root =  new Node(*other.root);
+    if (this == &other)return *this;
+    bst_delete(root);
+    root =  nullptr;
     std::vector<int> values;
-    traverse(values,root);
+    traverse(values,other.root);
     for(auto val : values){
         add_node(val);
     }
@@ -76,9 +82,10 @@ BST& BST::operator=(BST&& other){
 }
 
 BST::BST(const BST& other){
-    root =  new Node(*other.root);
+    if (this == &other)return;
+    root =  nullptr;
     std::vector<int> values;
-    traverse(values,root);
+    traverse(values,other.root);
     for(auto val : values){
         add_node(val);
     }
@@ -119,7 +126,6 @@ size_t BST::length(){
 
 
 bool BST::add_node(int value){
-    std::cout<<value<<std::endl;
     if (BST::find_node(value)!=nullptr)return false;
     if(length()==0){
         root = new Node(value,nullptr,nullptr);
@@ -130,8 +136,6 @@ bool BST::add_node(int value){
         if(value>parent->value)parent->right = node;
         else parent->left = node;
     }
-    std::cout<<"success";
-    std::cout<<(*this);
     return true;
 }
 
@@ -164,40 +168,50 @@ BST::Node** BST::find_parrent(int value){
 }
 
 BST::Node** BST::find_successor(int value){
-    Node* node = root;
-    while(node->value!=value && node!=nullptr){
-        if (value>(*node))node = node->right;
-        else node = node->left;
+    Node** node = find_node(value);
+    if(node==nullptr)return nullptr;
+    if((*node)->left!=nullptr){
+        node = &(*node)->left;
+        while((*node)->right!=nullptr)
+            node = &(*node)->right;
+        return node;
     }
-    if (node->left!=nullptr)return new Node*(node->left);
-    if (node->right!=nullptr)return new Node*(node->right);
-    return nullptr;
+    else if((*node)->right!=nullptr){
+        node = &(*node)->right;
+        while((*node)->left!=nullptr)
+            node = &(*node)->left;
+        return node;
+    }
+    else return nullptr;
 }
 
 bool BST::delete_node(int value){
     Node** node = find_node(value);
     if (node == nullptr)return false;
-    if ((*node)->left != nullptr){
-        int val = (*node)->left->value;
-        delete_node(val);
-        (*node)->value = val;
-    }
-    else if ((*node)->right != nullptr){
-        int val = (*node)->right->value;
-        delete_node(val);
-        (*node)->value = val;
+    Node** successor = find_successor(value);
+    if (successor == nullptr){
+        if (*node == root)
+            root = nullptr;
+        else{
+            Node** parent = find_parrent(value);
+            delete (*node);
+            if (value>**parent)
+                (*parent)->right = nullptr;
+            else
+                (*parent)->left = nullptr;
+            delete parent;
+        }
     }
     else{
-        Node **parent = find_parrent(value);
-        if(**parent > value){
-            delete (*parent)->left;
-            (*parent)->left =nullptr;
-        }
-        else{
-            delete (*parent)->right;
-            (*parent)->right =nullptr;
-        }
-        delete parent;
+        int svalue = (*successor)->value;
+        Node** successor_parent = find_parrent(svalue);
+        if (svalue > **successor_parent)
+            (*successor_parent)->right = nullptr;
+        else
+            (*successor_parent)->left = nullptr;
+        (*node)->value = svalue;
+        delete (*successor);
+        delete successor_parent;
     }
     delete node;
     return true;
@@ -226,6 +240,7 @@ BST BST::operator++(int){
 }
 
 void bst_delete(BST::Node*& node){
+    if(node==nullptr)return;
     if(node->left!=nullptr)bst_delete(node->left);
     if(node->right!=nullptr)bst_delete(node->right);
     delete node;

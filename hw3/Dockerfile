@@ -15,6 +15,7 @@ RUN  echo 'ubuntu:1234' | chpasswd
 RUN service ssh start
 EXPOSE 22
 
+
 # install google test
 WORKDIR /usr/src/libraries
 RUN git clone --depth=1 -b main https://github.com/google/googletest.git
